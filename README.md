@@ -19,7 +19,7 @@ In the repo we provide a conda environment and instructions to reproduce the pip
 ## Requirements
 
 - `conda>=3.7`
-- TODO The following data from [here](https://ibm.ent.box.com/v/paccmann-sarscov2)  
+- TODO The following data from [here](https://ibm.ent.box.com/v/paccmann-sarscov2-data)  
   View the respective README.md files on data sources.  
 - The git repos linked in the [previous section](#description)
 
@@ -60,7 +60,7 @@ data
 │   │   ├── filtered_train_binding_data.csv
 │   │   ├── filtered_val_binding_data.csv
 │   │   └── sequences.smi
-│   ├── proteinVAE
+│   ├── ProteinVAE
 │   │   ├── README.md
 │   │   ├── all_sequence_data.fasta
 │   │   └── tape_encoded
@@ -81,9 +81,8 @@ data
     ├── tape_encoded
     │   └── avg.csv
     └── uniprot_covid-19.fasta
-
-1 directory, 11 files
 ```
+**NOTE:** in the [Pipelines](#pipeline) section you have the option to use our pretrained models. In this case you would only require the data under `data/training/`.
 
 **NOTE:** no worries, the `data` folder is in the [.gitignore](./.gitignore).
 
@@ -108,14 +107,76 @@ The branch is given to ensure a tested version.
 
 Now it's all set to run the full pipeline.
 
-**NOTE:** the workload required to run the full pipeline is intesive and might not be straightforward to run all the steps on a desktop laptop. For this reason, we also provide **pretrained models** (under [data/models](data/models)that can be downloaded and used to run the different steps. 
+**NOTE:** the workload required to run the full pipeline is intesive and might not be straightforward to run all the steps on a desktop laptop. For this reason, we also provide [pretrained models](https://ibm.ent.box.com/v/paccmann-sarscov2-models) that can be downloaded and used to run the different steps. 
+
+if you chose to download our pretrained models, the directory structure looks like this:
+TODO update final
+```console
+models
+├── OrganDB
+│   ├── model_params.json
+│   ├── results
+│   │   ├── best_predictions.npy
+│   │   └── metrics.json
+│   ├── smiles_language.pkl
+│   └── weights
+│       ├── best_ROC-AUC_mca.pt
+│       ├── best_loss_mca.pt
+│       ├── best_precision-recall\ score_mca.pt
+│       └── done_training_mca.pt
+├── ProteinVAE
+│   ├── model_params.json
+│   └── weights
+│       ├── 1249_epoch_decoder.pt
+│       ├── 1249_epoch_encoder.pt
+│       ├── 1249_epoch_vae.pt
+│       ├── best_both_decoder.pt
+│       ├── best_both_encoder.pt
+│       ├── best_both_vae.pt
+│       ├── best_kl_decoder.pt
+│       ├── best_kl_encoder.pt
+│       ├── best_kl_vae.pt
+│       ├── best_rec_decoder.pt
+│       ├── best_rec_encoder.pt
+│       └── best_rec_vae.pt
+├── SELFIESVAE
+│   ├── loss_tracker.json
+│   ├── model_params.json
+│   ├── selfies_language.pkl
+│   └── weights
+│       ├── best_kld.pt
+│       ├── best_loss.pt
+│       ├── best_rec.pt
+│       └── saved_model_epoch_4_iter_3000.pt
+├── Tox21
+│   ├── model_params.json
+│   ├── results
+│   │   ├── best_predictions.npy
+│   │   └── metrics.json
+│   ├── smiles_language.pkl
+│   └── weights
+│       ├── best_ROC-AUC_mca.pt
+│       ├── best_loss_mca.pt
+│       └── best_precision-recall\ score_mca.pt
+├── affinity_prediction
+├── base_affinity
+│   ├── model_params.json
+│   ├── protein_language.pkl
+│   ├── smiles_language.pkl
+│   └── weights
+│       ├── best_ROC-AUC_bimodal_mca.pt
+│       └── best_loss_bimodal_mca.pt
+└── language_models
+    ├── protein_language_bindingdb.pkl
+    └── smiles_language_chembl_gdsc_ccle_tox21_zinc_organdb_bindingdb.pkl
+```
 
 **NOTE:** in the following, we assume a folder `models` has been created in the root of the repository. No worries, the `models` folder is in the [.gitignore](./.gitignore).
 
-### Multimodal drug sensitivity predictor
-
+### affinity predictor
+TODO
 ```console
-(paccmann_rl) $ python ./code/paccmann_predictor/examples/train_paccmann.py \
+(paccmann_sarscov2) $ python ./code/paccmann_predictor/examples/affinity/train_affinity.py \
     ./data/splitted_data/gdsc_cell_line_ic50_train_fraction_0.9_id_997_seed_42.csv \
     ./data/splitted_data/gdsc_cell_line_ic50_test_fraction_0.1_id_997_seed_42.csv \
     ./data/gdsc-rnaseq_gene-expression.csv \
@@ -126,10 +187,17 @@ Now it's all set to run the full pipeline.
     ./code/paccmann_predictor/examples/example_params.json paccmann
 ```
 
-### PVAE
+### toxicity predictor
+TODO
+```console
+(paccmann_sarscov2) $ python ./code/toxsmi/scripts/train_tox.py \
+    ./data/
+```
 
+### protein VAE
+TODO
 ``` console
-(paccmann_rl) $ python ./code/paccmann_omics/examples/train_vae.py \
+(paccmann_sarscov2) $ python ./code/paccmann_omics/examples/encoded_proteins/train_protein_encoding_vae.py \
     ./data/splitted_data/tcga_rnaseq_train_fraction_0.9_id_242870585127480531622270373503581547167_seed_42.csv \
     ./data/splitted_data/tcga_rnaseq_test_fraction_0.1_id_242870585127480531622270373503581547167_seed_42.csv \
     ./data/2128_genes.pkl \
@@ -137,10 +205,10 @@ Now it's all set to run the full pipeline.
     ./code/paccmann_omics/examples/example_params.json pvae
 ```
 
-### SVAE
-
+### SELFIES VAE
+TODO
 ``` console
-(paccmann_rl) $ python ./code/paccmann_chemistry/examples/train_vae.py \
+(paccmann_sarscov2) $ python ./code/paccmann_chemistry/examples/train_vae.py \
     ./data/splitted_data/train_chembl_22_clean_1576904_sorted_std_final.smi \
     ./data/splitted_data/test_chembl_22_clean_1576904_sorted_std_final.smi \
     ./data/smiles_language_chembl_gdsc_ccle.pkl \
@@ -148,10 +216,11 @@ Now it's all set to run the full pipeline.
     ./code/paccmann_chemistry/examples/example_params.json svae
 ```
 
-### PaccMann^RL
-
+### PaccMann^RL on SARS-CoV-2
+TODO
+TODO all generator related on travis and Dockerfile, .txt and .yml
 ``` console
-(paccmann_rl) $ python ./code/paccmann_generator/examples/train_paccmann_rl.py \
+(paccmann_sarscov2) $ python ./code/paccmann_generator/examples/affinity/train_conditional_generator.py \
     ./models/svae \
     ./models/pvae \
     ./models/paccmann \
@@ -165,13 +234,15 @@ Now it's all set to run the full pipeline.
 
 ## References
 
-If you use `paccmann_rl` in your projects, please cite the following:
+If you use `paccmann_sarscov2` in your projects, please cite the following:
 
 ```bib
-@article{born2020paccmannrl,
-  title={PaccMannRL on SARS-CoV-2: Designing antiviral candidates with conditional generative models.},
-  author={Born, Jannis and Manica, Matteo and Cadow, Joris and Markert, Greta and Mill, Nil Adell and Filipavicius, Modestas and Mart{\'\i}nez, Mar{\'\i}a Rodr{\'\i}guez},
-  journal={CoRR},
-  year={2020}
+@misc{born2020paccmannrl,
+    title={PaccMann$^{RL}$ on SARS-CoV-2: Designing antiviral candidates with conditional generative models},
+    author={Jannis Born and Matteo Manica and Joris Cadow and Greta Markert and Nil Adell Mill and Modestas Filipavicius and María Rodríguez Martínez},
+    year={2020},
+    eprint={2005.13285},
+    archivePrefix={arXiv},
+    primaryClass={q-bio.QM}
 }
 ```
