@@ -1,30 +1,29 @@
-[![Build Status](https://travis-ci.org/PaccMann/paccmann_rl.svg?branch=master)](https://travis-ci.org/PaccMann/paccmann_rl)
+[![Build Status](https://travis-ci.com/PaccMann/paccmann_sarscov2.svg?branch=master)](https://travis-ci.com/PaccMann/paccmann_sarscov2)
 # paccmann_rl
 
-Pipeline to reproduce the results of the [PaccMann^RL paper](https://arxiv.org/abs/1909.05114).
+Pipeline to reproduce the results of the [PaccMann^RL on SARS-CoV-2 paper](https://arxiv.org/abs/2005.13285).
 
 ## Description
 
-In the repo we provide a conda environment and instructions to reproduce the pipeline descirbed in the manuscript:
+In the repo we provide a conda environment and instructions to reproduce the pipeline described in the manuscript:
 
-1. Train a multimodal drug sensitivity predictor ([source code](https://github.com/PaccMann/paccmann_predictor))
-2. Train a generative model for omic profiles, also known as the PVAE ([source code](https://github.com/PaccMann/paccmann_omics))
-3. Train a generative model for molecules, also known as the SVAE ([source code](https://github.com/PaccMann/paccmann_chemistry))
-4. Train PaccMann^RL ([source code](https://github.com/PaccMann/paccmann_generator))
+1. Train a multimodal protein-compound interaction classifier, also known as the affinity predictor ([source code](https://github.com/PaccMann/paccmann_predictor))
+2. Train a toxicity predictor ([source code](https://github.com/PaccMann/toxsmi))
+3. Train a generative model for omic profiles, also known as the ProteinVAE ([source code](https://github.com/PaccMann/paccmann_omics))
+4. Train a generative model for molecules, also known as the SVAE ([source code](https://github.com/PaccMann/paccmann_chemistry))
+5. Train PaccMann^RL on SARS-CoV-2 using the pretained models from above ([source code](https://github.com/PaccMann/paccmann_generator))
+
+
+**NOTE:** In the linked repositories, there are often multiple examples for training. For the use case of `paccmann_sarscov2`, relevant examples are named `affinity` or `encoded_proteins`.
 
 ## Requirements
 
 - `conda>=3.7`
-- The following data from [here](https://ibm.ent.box.com/v/paccmann-pytoda-data):
-  - The processed splitted data from the folder `splitted_data`
-  - The processed gene expression data from [GDSC](https://www.cancerrxgene.org/): `data/gene_expression/gdsc-rnaseq_gene-expression.csv`
-  - The processed SMILES from the drugs from [GDSC](https://www.cancerrxgene.org/): `data/smiles/gdsc.smi`
-  - A pickled [SMILESLanguage](https://github.com/PaccMann/paccmann_datasets/blob/master/pytoda/smiles/smiles_language.py) object (`data/smiles_language_chembl_gdsc_ccle.pkl`)
-  - A pickled list of genes representing the panel considered in the paper (`data/2128_genes.pkl`)
-  - A pickled pandas DataFrame containing expression values and metadata for the cell lines considered in the paper (`data/gdsc_transcriptomics_for_conditional_generation.pkl`)
+- TODO The following data from [here](https://ibm.ent.box.com/v/paccmann-sarscov2)  
+  View the respective README.md files on data sources.  
 - The git repos linked in the [previous section](#description)
 
-**NOTE:** please refer to the [README.md](https://ibm.ent.box.com/v/paccmann-pytoda-data/file/548614344106) and to the manuscript for details on the datasets used and the preprocessing applied.
+<!-- **NOTE:** please refer to the [README.md](https://ibm.ent.box.com/v/paccmann-pytoda-data/file/548614344106) and to the manuscript for details on the datasets used and the preprocessing applied. -->
 
 ## Setup
 
@@ -39,7 +38,7 @@ conda env create -f conda.yml
 Activate the environment:
 
 ```sh
-conda activate paccmann_rl
+conda activate paccmann_sarscov2
 ```
 
 ### Download data
@@ -47,20 +46,41 @@ conda activate paccmann_rl
 Download the data reported in the [requirements section](#requirements).
 From now on, we will assume that they are stored in the root of the repository in a folder called `data`, following this structure:
 
+TODO update final version
 ```console
 data
-├── 2128_genes.pkl
-├── gdsc-rnaseq_gene-expression.csv
-├── gdsc.smi
-├── gdsc_transcriptomics_for_conditional_generation.pkl
-├── smiles_language_chembl_gdsc_ccle.pkl
-└── splitted_data
-    ├── gdsc_cell_line_ic50_test_fraction_0.1_id_997_seed_42.csv
-    ├── gdsc_cell_line_ic50_train_fraction_0.9_id_997_seed_42.csv
-    ├── tcga_rnaseq_test_fraction_0.1_id_242870585127480531622270373503581547167_seed_42.csv
-    ├── tcga_rnaseq_train_fraction_0.9_id_242870585127480531622270373503581547167_seed_42.csv
-    ├── test_chembl_22_clean_1576904_sorted_std_final.smi
-    └── train_chembl_22_clean_1576904_sorted_std_final.smi
+├── pretraining
+│   ├── SELFIESVAE
+│   │   ├── test_chembl_22_clean_1576904_sorted_std_final.smi
+│   │   └── train_chembl_22_clean_1576904_sorted_std_final.smi
+│   ├── affinity_predictor
+│   │   ├── README.md
+│   │   ├── filtered_ligands.smi
+│   │   ├── filtered_test_binding_data.csv
+│   │   ├── filtered_train_binding_data.csv
+│   │   ├── filtered_val_binding_data.csv
+│   │   └── sequences.smi
+│   ├── proteinVAE
+│   │   ├── README.md
+│   │   ├── all_sequence_data.fasta
+│   │   └── tape_encoded
+│   │       └── avg
+│   │           ├── test_representation.csv
+│   │           ├── train_representation.csv
+│   │           └── val_representation.csv
+│   └── toxicity_predictor
+│       ├── README.md
+│       ├── smiles_language_tox21.pkl
+│       ├── smiles_vae_embeddings.pkl
+│       ├── tox21.smi
+│       ├── tox21_score.csv
+│       ├── tox21_test.csv
+│       └── tox21_train.csv
+└── training
+    ├── README.md
+    ├── tape_encoded
+    │   └── avg.csv
+    └── uniprot_covid-19.fasta
 
 1 directory, 11 files
 ```
@@ -73,12 +93,14 @@ To get the scripts to run each of the component create a `code` folder and clone
 
 ```sh
 mkdir code && cd code && \
-  git clone https://github.com/PaccMann/paccmann_predictor && \ 
-  git clone https://github.com/PaccMann/paccmann_omics && \ 
-  git clone https://github.com/PaccMann/paccmann_chemistry && \ 
-  git clone https://github.com/PaccMann/paccmann_generator && \
+  git clone --branch sarscov2 https://github.com/PaccMann/paccmann_predictor && \ 
+  git clone --branch 0.0.1 https://github.com/PaccMann/toxsmi && \
+  git clone --branch sarscov2 https://github.com/PaccMann/paccmann_omics && \ 
+  git clone --branch sarscov2 https://github.com/PaccMann/paccmann_chemistry && \ 
+  git clone --branch sarscov2 https://github.com/PaccMann/paccmann_generator && \
   cd ..
 ```
+The branch is given to ensure a tested version.
 
 **NOTE:** no worries, the `code` folder is in the [.gitignore](./.gitignore).
 
@@ -86,7 +108,7 @@ mkdir code && cd code && \
 
 Now it's all set to run the full pipeline.
 
-**NOTE:** the workload required to run the full pipeline is intesive and might not be straightforward to run all the steps on a desktop laptop. For this reason, we also provide [pretrained models](https://ibm.ent.box.com/v/paccmann-pytoda-data/folder/91897885403) that can be downloaded and used to run the different steps.
+**NOTE:** the workload required to run the full pipeline is intesive and might not be straightforward to run all the steps on a desktop laptop. For this reason, we also provide **pretrained models** (under [data/models](data/models)that can be downloaded and used to run the different steps. 
 
 **NOTE:** in the following, we assume a folder `models` has been created in the root of the repository. No worries, the `models` folder is in the [.gitignore](./.gitignore).
 
@@ -146,12 +168,10 @@ Now it's all set to run the full pipeline.
 If you use `paccmann_rl` in your projects, please cite the following:
 
 ```bib
-@misc{born2019paccmannrl,
-    title={PaccMann^RL: Designing anticancer drugs from transcriptomic data via reinforcement learning},
-    author={Jannis Born and Matteo Manica and Ali Oskooei and Joris Cadow and María Rodríguez Martínez},
-    year={2019},
-    eprint={1909.05114},
-    archivePrefix={arXiv},
-    primaryClass={q-bio.BM}
+@article{born2020paccmannrl,
+  title={PaccMannRL on SARS-CoV-2: Designing antiviral candidates with conditional generative models.},
+  author={Born, Jannis and Manica, Matteo and Cadow, Joris and Markert, Greta and Mill, Nil Adell and Filipavicius, Modestas and Mart{\'\i}nez, Mar{\'\i}a Rodr{\'\i}guez},
+  journal={CoRR},
+  year={2020}
 }
 ```
