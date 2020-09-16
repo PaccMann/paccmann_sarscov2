@@ -5,15 +5,6 @@ pytoda @ git+https://github.com/PaccMann/paccmann_datasets@0.1.1
 paccmann_predictor @ git+https://github.com/PaccMann/paccmann_predictor@sarscov2
 toxsmi @ git+https://github.com/PaccMann/toxsmi@0.0.1
 paccmann_chemistry @ git+https://github.com/PaccMann/paccmann_chemistry@sarscov2
-# paccmann_generator @ git+https://github.com/PaccMann/paccmann_generator@sarscov2
+paccmann_generator @ git+https://github.com/PaccMann/paccmann_generator@sarscov2
 paccmann_omics @ git+https://github.com/PaccMann/paccmann_omics@sarscov2
 absl-py>=0.8.1
-# data analysis
-# upfp==0.0.5
-# pandas>=0.24.2,<1.0
-# scikit-learn==0.22.2
-# matplotlib>=3.1.1
-# seaborn>=0.9.0
-# jupyter==1.0.0
-# faerun==0.3.7
-# tqdm>=4.31

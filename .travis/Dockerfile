@@ -5,7 +5,7 @@ RUN git clone --branch sarscov2 https://github.com/PaccMann/paccmann_predictor
 RUN git clone --branch 0.0.1 https://github.com/PaccMann/toxsmi
 RUN git clone --branch sarscov2 https://github.com/PaccMann/paccmann_omics 
 RUN git clone --branch sarscov2 https://github.com/PaccMann/paccmann_chemistry 
-# RUN git clone --branch sarscov2 https://github.com/PaccMann/paccmann_generator
+RUN git clone --branch sarscov2 https://github.com/PaccMann/paccmann_generator
 WORKDIR /paccmann_sarsvoc2
 # install requirements
 COPY .travis/requirements.txt .

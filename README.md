@@ -19,7 +19,7 @@ In the repo we provide a conda environment and instructions to reproduce the pip
 ## Requirements
 
 - `conda>=3.7`
-- TODO The following data from [here](https://ibm.ent.box.com/v/paccmann-sarscov2-data)  
+- The following data from [here](https://ibm.ent.box.com/v/paccmann-sarscov2-data)  
   View the respective README.md files on data sources.  
 - The git repos linked in the [previous section](#description)
 
@@ -135,7 +135,6 @@ TODO params "epochs": 2000, "batch_size": 8192 in trained model
 ```
 
 ### SELFIES VAE
-TODO language file
 ``` console
 (paccmann_sarscov2) $ python ./code/paccmann_chemistry/examples/train_vae.py \
     ./data/pretraining/SELFIESVAE/train_chembl_22_clean_1576904_sorted_std_final.smi \
@@ -147,10 +146,6 @@ TODO language file
 ```
 
 ### PaccMann^RL on SARS-CoV-2
-TODO params.json tox21 path
-TODO Tox21 arg
-TODO leave one out arg
-TODO all generator related on travis and Dockerfile, .txt and .yml
 ``` console
 (paccmann_sarscov2) $ python ./code/paccmann_generator/examples/affinity/train_conditional_generator.py \
     ./models/SELFIESVAE \
@@ -158,9 +153,9 @@ TODO all generator related on travis and Dockerfile, .txt and .yml
     ./models/affinity \
     ./data/training/merged_sequence_encoding/uniprot_covid-19.csv \
     ./code/paccmann_generator/examples/affinity/conditional_generator.json \
-    paccmann_sarscov2
-    # TODO args: protein id to leave one out
-    # TODO toxicity model arg
+    paccmann_sarscov2 \
+    ACE2_HUMAN \
+    --tox21_path ./models/Tox21
 ```
 
 TODO

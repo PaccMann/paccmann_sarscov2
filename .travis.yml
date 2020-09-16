@@ -10,11 +10,11 @@ script:
   - docker run -it paccmann_sarscov2 python3 -c "import toxsmi"
   - docker run -it paccmann_sarscov2 python3 -c "import paccmann_omics"
   - docker run -it paccmann_sarscov2 python3 -c "import paccmann_chemistry"
-  # - docker run -it paccmann_sarscov2 python3 -c "import paccmann_generator"
+  - docker run -it paccmann_sarscov2 python3 -c "import paccmann_generator"
   - docker run -it paccmann_sarscov2 python3 ./code/paccmann_predictor/examples/affinity/train_affinity.py -h
   - docker run -it paccmann_sarscov2 python3 ./code/toxsmi/scripts/train_tox.py -h
   - docker run -it paccmann_sarscov2 python3 ./code/paccmann_omics/examples/encoded_proteins/train_protein_encoding_vae.py -h
   - docker run -it paccmann_sarscov2 python3 ./code/paccmann_chemistry/examples/train_vae.py -h
-  # - docker run -it paccmann_sarscov2 python3 ./code/paccmann_generator/examples/affinity/train_conditional_generator.py -h
+  - docker run -it paccmann_sarscov2 python3 ./code/paccmann_generator/examples/affinity/train_conditional_generator.py -h
 notifications:
   slack: paccmann:aH68YX84jaEDbgE1BtRgbGe0
