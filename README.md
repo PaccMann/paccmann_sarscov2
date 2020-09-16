@@ -10,7 +10,7 @@ In the repo we provide a conda environment and instructions to reproduce the pip
 1. Train a multimodal protein-compound interaction classifier, also known as the affinity predictor ([source code](https://github.com/PaccMann/paccmann_predictor))
 2. Train a toxicity predictor ([source code](https://github.com/PaccMann/toxsmi))
 3. Train a generative model for omic profiles, also known as the ProteinVAE ([source code](https://github.com/PaccMann/paccmann_omics))
-4. Train a generative model for molecules, also known as the SVAE ([source code](https://github.com/PaccMann/paccmann_chemistry))
+4. Train a generative model for molecules, also known as the SELFIESVAE ([source code](https://github.com/PaccMann/paccmann_chemistry))
 5. Train PaccMann^RL on SARS-CoV-2 using the pretained models from above ([source code](https://github.com/PaccMann/paccmann_generator))
 
 
@@ -46,43 +46,17 @@ conda activate paccmann_sarscov2
 Download the data reported in the [requirements section](#requirements).
 From now on, we will assume that they are stored in the root of the repository in a folder called `data`, following this structure:
 
-TODO update final version
 ```console
 data
 ├── pretraining
-│   ├── SELFIESVAE
-│   │   ├── test_chembl_22_clean_1576904_sorted_std_final.smi
-│   │   └── train_chembl_22_clean_1576904_sorted_std_final.smi
-│   ├── affinity_predictor
-│   │   ├── README.md
-│   │   ├── filtered_ligands.smi
-│   │   ├── filtered_test_binding_data.csv
-│   │   ├── filtered_train_binding_data.csv
-│   │   ├── filtered_val_binding_data.csv
-│   │   └── sequences.smi
 │   ├── ProteinVAE
-│   │   ├── README.md
-│   │   ├── all_sequence_data.fasta
-│   │   └── tape_encoded
-│   │       └── avg
-│   │           ├── test_representation.csv
-│   │           ├── train_representation.csv
-│   │           └── val_representation.csv
+│   ├── SELFIESVAE
+│   ├── affinity_predictor
+│   ├── laguage_models
 │   └── toxicity_predictor
-│       ├── README.md
-│       ├── smiles_language_tox21.pkl
-│       ├── smiles_vae_embeddings.pkl
-│       ├── tox21.smi
-│       ├── tox21_score.csv
-│       ├── tox21_test.csv
-│       └── tox21_train.csv
 └── training
-    ├── README.md
-    ├── tape_encoded
-    │   └── avg.csv
-    └── uniprot_covid-19.fasta
 ```
-**NOTE:** in the [Pipelines](#pipeline) section you have the option to use our pretrained models. In this case you would only require the data under `data/training/`.
+**NOTE:** This is around 6GB of data! In the [Pipelines](#pipeline) section you have the option to use our pretrained models. In this case you would only require the data under `data/training/` (8MB).
 
 **NOTE:** no worries, the `data` folder is in the [.gitignore](./.gitignore).
 
@@ -99,7 +73,7 @@ mkdir code && cd code && \
   git clone --branch sarscov2 https://github.com/PaccMann/paccmann_generator && \
   cd ..
 ```
-The branch is given to ensure a tested version.
+The branch is given to ensure a tested version working with the provided conda
 
 **NOTE:** no worries, the `code` folder is in the [.gitignore](./.gitignore).
 
@@ -107,74 +81,21 @@ The branch is given to ensure a tested version.
 
 Now it's all set to run the full pipeline.
 
-**NOTE:** the workload required to run the full pipeline is intesive and might not be straightforward to run all the steps on a desktop laptop. For this reason, we also provide [pretrained models](https://ibm.ent.box.com/v/paccmann-sarscov2-models) that can be downloaded and used to run the different steps. 
+**NOTE:** the workload required to run the full pipeline is intesive and might not be straightforward to run all the steps on a desktop laptop. For this reason, we also provide [pretrained models](https://ibm.ent.box.com/v/paccmann-sarscov2-models) (ca. 700MB) that can be downloaded and used to run the different steps. 
 
 if you chose to download our pretrained models, the directory structure looks like this:
-TODO update final
+
 ```console
 models
-├── OrganDB
-│   ├── model_params.json
-│   ├── results
-│   │   ├── best_predictions.npy
-│   │   └── metrics.json
-│   ├── smiles_language.pkl
-│   └── weights
-│       ├── best_ROC-AUC_mca.pt
-│       ├── best_loss_mca.pt
-│       ├── best_precision-recall\ score_mca.pt
-│       └── done_training_mca.pt
 ├── ProteinVAE
-│   ├── model_params.json
-│   └── weights
-│       ├── 1249_epoch_decoder.pt
-│       ├── 1249_epoch_encoder.pt
-│       ├── 1249_epoch_vae.pt
-│       ├── best_both_decoder.pt
-│       ├── best_both_encoder.pt
-│       ├── best_both_vae.pt
-│       ├── best_kl_decoder.pt
-│       ├── best_kl_encoder.pt
-│       ├── best_kl_vae.pt
-│       ├── best_rec_decoder.pt
-│       ├── best_rec_encoder.pt
-│       └── best_rec_vae.pt
 ├── SELFIESVAE
-│   ├── loss_tracker.json
-│   ├── model_params.json
-│   ├── selfies_language.pkl
-│   └── weights
-│       ├── best_kld.pt
-│       ├── best_loss.pt
-│       ├── best_rec.pt
-│       └── saved_model_epoch_4_iter_3000.pt
 ├── Tox21
-│   ├── model_params.json
-│   ├── results
-│   │   ├── best_predictions.npy
-│   │   └── metrics.json
-│   ├── smiles_language.pkl
-│   └── weights
-│       ├── best_ROC-AUC_mca.pt
-│       ├── best_loss_mca.pt
-│       └── best_precision-recall\ score_mca.pt
-├── affinity_prediction
-├── base_affinity
-│   ├── model_params.json
-│   ├── protein_language.pkl
-│   ├── smiles_language.pkl
-│   └── weights
-│       ├── best_ROC-AUC_bimodal_mca.pt
-│       └── best_loss_bimodal_mca.pt
-└── language_models
-    ├── protein_language_bindingdb.pkl
-    └── smiles_language_chembl_gdsc_ccle_tox21_zinc_organdb_bindingdb.pkl
+└── affinity
 ```
 
 **NOTE:** in the following, we assume a folder `models` has been created in the root of the repository. No worries, the `models` folder is in the [.gitignore](./.gitignore).
 
 ### affinity predictor
-TODO language files on box
 ```console
 (paccmann_sarscov2) $ python ./code/paccmann_predictor/examples/affinity/train_affinity.py \
     ./data/pretraining/affinity_predictor/filtered_train_binding_data.csv \
@@ -189,7 +110,7 @@ TODO language files on box
 ```
 
 ### toxicity predictor
-TODO check params.json
+TODO embedding path in toxsmi.json
 ```console
 (paccmann_sarscov2) $ python ./code/toxsmi/scripts/train_tox.py \
     ./data/pretraining/toxicity_predictor/tox21_train.csv \
@@ -197,7 +118,7 @@ TODO check params.json
     ./data/pretraining/toxicity_predictor/tox21.smi \
     ./data/pretraining/language_models/smiles_language_tox21.pkl \
     ./models/ \
-    ./data/pretraining/parameters/tox21.json \ #TODO  not ./code/toxsmi/params/mca.json so I made this one
+    ./code/toxsmi/params/mca.json \
     Tox21
 ```
 
@@ -226,17 +147,20 @@ TODO language file
 ```
 
 ### PaccMann^RL on SARS-CoV-2
-TODO params.json for affinity
-TODO what about Tox21?
+TODO params.json tox21 path
+TODO Tox21 arg
+TODO leave one out arg
 TODO all generator related on travis and Dockerfile, .txt and .yml
 ``` console
 (paccmann_sarscov2) $ python ./code/paccmann_generator/examples/affinity/train_conditional_generator.py \
     ./models/SELFIESVAE \
     ./models/ProteinVAE \
     ./models/affinity \
-    ./data/training/tape_encoded/avg.csv \
-    ./code/paccmann_generator/examples/affinity/example_params.json \ #TODO
+    ./data/training/merged_sequence_encoding/uniprot_covid-19.csv \
+    ./code/paccmann_generator/examples/affinity/conditional_generator.json \
     paccmann_sarscov2
+    # TODO args: protein id to leave one out
+    # TODO toxicity model arg
 ```
 
 TODO
