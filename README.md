@@ -177,14 +177,15 @@ models
 TODO
 ```console
 (paccmann_sarscov2) $ python ./code/paccmann_predictor/examples/affinity/train_affinity.py \
-    ./data/splitted_data/gdsc_cell_line_ic50_train_fraction_0.9_id_997_seed_42.csv \
-    ./data/splitted_data/gdsc_cell_line_ic50_test_fraction_0.1_id_997_seed_42.csv \
-    ./data/gdsc-rnaseq_gene-expression.csv \
-    ./data/gdsc.smi \
-    ./data/2128_genes.pkl \
-    ./data/smiles_language_chembl_gdsc_ccle.pkl \
+    ./data/pretraining/affinity_predictor/filtered_train_binding_data.csv \
+    ./data/pretraining/affinity_predictor/filtered_val_binding_data.csv \
+    ./data/pretraining/affinity_predictor/sequences.smi \
+    ./data/pretraining/affinity_predictor/filtered_ligands.smi \
+    ./models/language_models/smiles_language_chembl_gdsc_ccle_tox21_zinc_organdb_bindingdb.pkl \
+    ./models/language_models/protein_language_bindingdb.pkl \
     ./models/ \
-    ./code/paccmann_predictor/examples/example_params.json paccmann
+    ./code/paccmann_predictor/examples/affinity/affinity.json \
+    affinity
 ```
 
 ### toxicity predictor
