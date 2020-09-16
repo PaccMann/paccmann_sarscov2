@@ -174,63 +174,72 @@ models
 **NOTE:** in the following, we assume a folder `models` has been created in the root of the repository. No worries, the `models` folder is in the [.gitignore](./.gitignore).
 
 ### affinity predictor
-TODO
+TODO language files on box
 ```console
 (paccmann_sarscov2) $ python ./code/paccmann_predictor/examples/affinity/train_affinity.py \
     ./data/pretraining/affinity_predictor/filtered_train_binding_data.csv \
     ./data/pretraining/affinity_predictor/filtered_val_binding_data.csv \
     ./data/pretraining/affinity_predictor/sequences.smi \
     ./data/pretraining/affinity_predictor/filtered_ligands.smi \
-    ./models/language_models/smiles_language_chembl_gdsc_ccle_tox21_zinc_organdb_bindingdb.pkl \
-    ./models/language_models/protein_language_bindingdb.pkl \
+    ./data/pretraining/language_models/smiles_language_chembl_gdsc_ccle_tox21_zinc_organdb_bindingdb.pkl \
+    ./data/pretraining/language_models/protein_language_bindingdb.pkl \
     ./models/ \
     ./code/paccmann_predictor/examples/affinity/affinity.json \
     affinity
 ```
 
 ### toxicity predictor
-TODO
+TODO check params.json
 ```console
 (paccmann_sarscov2) $ python ./code/toxsmi/scripts/train_tox.py \
-    ./data/
+    ./data/pretraining/toxicity_predictor/tox21_train.csv \
+    ./data/pretraining/toxicity_predictor/tox21_test.csv \
+    ./data/pretraining/toxicity_predictor/tox21.smi \
+    ./data/pretraining/language_models/smiles_language_tox21.pkl \
+    ./models/ \
+    ./data/pretraining/parameters/tox21.json \ #TODO  not ./code/toxsmi/params/mca.json so I made this one
+    Tox21
 ```
 
 ### protein VAE
-TODO
+TODO discuss name
+TODO params "epochs": 2000, "batch_size": 8192 in trained model
 ``` console
 (paccmann_sarscov2) $ python ./code/paccmann_omics/examples/encoded_proteins/train_protein_encoding_vae.py \
-    ./data/splitted_data/tcga_rnaseq_train_fraction_0.9_id_242870585127480531622270373503581547167_seed_42.csv \
-    ./data/splitted_data/tcga_rnaseq_test_fraction_0.1_id_242870585127480531622270373503581547167_seed_42.csv \
-    ./data/2128_genes.pkl \
+    ./data/pretraining/proteinVAE/tape_encoded/avg/train_representation.csv \
+    ./data/pretraining/proteinVAE/tape_encoded/avg/val_representation.csv \
     ./models/ \
-    ./code/paccmann_omics/examples/example_params.json pvae
+    ./code/paccmann_omics/examples/encoded_proteins/protein_encoding_vae_params.json \
+    ProteinVAE
 ```
 
 ### SELFIES VAE
-TODO
+TODO language file
 ``` console
 (paccmann_sarscov2) $ python ./code/paccmann_chemistry/examples/train_vae.py \
-    ./data/splitted_data/train_chembl_22_clean_1576904_sorted_std_final.smi \
-    ./data/splitted_data/test_chembl_22_clean_1576904_sorted_std_final.smi \
-    ./data/smiles_language_chembl_gdsc_ccle.pkl \
+    ./data/pretraining/SELFIESVAE/train_chembl_22_clean_1576904_sorted_std_final.smi \
+    ./data/pretraining/SELFIESVAE/test_chembl_22_clean_1576904_sorted_std_final.smi \
+    ./data/pretraining/language_models/selfies_language.pkl \
     ./models/ \
-    ./code/paccmann_chemistry/examples/example_params.json svae
+    ./code/paccmann_chemistry/examples/example_params.json \
+    SELFIESVAE
 ```
 
 ### PaccMann^RL on SARS-CoV-2
-TODO
+TODO params.json for affinity
+TODO what about Tox21?
 TODO all generator related on travis and Dockerfile, .txt and .yml
 ``` console
 (paccmann_sarscov2) $ python ./code/paccmann_generator/examples/affinity/train_conditional_generator.py \
-    ./models/svae \
-    ./models/pvae \
-    ./models/paccmann \
-    ./data/smiles_language_chembl_gdsc_ccle.pkl \
-    ./data/gdsc_transcriptomics_for_conditional_generation.pkl \
-    ./code/paccmann_generator/examples/example_params.json \
-    paccmann_rl breast
+    ./models/SELFIESVAE \
+    ./models/ProteinVAE \
+    ./models/affinity \
+    ./data/training/tape_encoded/avg.csv \
+    ./code/paccmann_generator/examples/affinity/example_params.json \ #TODO
+    paccmann_sarscov2
 ```
 
+TODO
 **NOTE:** this will create a `biased_model` folder containing the conditional generator and the baseline SMILES generator used. In this case: `breast_paccmann_rl` and `baseline`. No worries, the `biased_models` folder is in the [.gitignore](./.gitignore).
 
 ## References
