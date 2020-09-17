@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/PaccMann/paccmann_sarscov2.svg?branch=master)](https://travis-ci.com/PaccMann/paccmann_sarscov2)
+[![Build Status](https://travis-ci.com/PaccMann/paccmann_sarscov2.svg?token=2MtToGFVpNnBsn4qEgU7&branch=master)](https://travis-ci.com/PaccMann/paccmann_sarscov2)
 # paccmann_sarscov2
 
 Pipeline to reproduce the results of the [PaccMann^RL on SARS-CoV-2 paper](https://arxiv.org/abs/2005.13285).
