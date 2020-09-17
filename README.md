@@ -41,7 +41,7 @@ Activate the environment:
 conda activate paccmann_sarscov2
 ```
 
-### Download data
+### Download data and optional pretrained models
 
 Download the data reported in the [requirements section](#requirements).
 From now on, we will assume that they are stored in the root of the repository in a folder called `data`, following this structure:
@@ -56,7 +56,22 @@ data
 │   └── toxicity_predictor
 └── training
 ```
-**NOTE:** This is around 6GB of data! In the [Pipelines](#pipeline) section you have the option to use our pretrained models. In this case you would only require the data under `data/training/` (8MB).
+This is around **6GB** of data, required for pretaining multiple models.
+Also, the workload required to run the full pipeline is intensive and might not be straightforward to run all the steps on a desktop laptop.
+
+For these reasons we also provide [pretrained models](https://ibm.ent.box.com/v/paccmann-sarscov2-models) (ca. 700MB) for download. In the [Pipeline](#pipeline) section this allows you to skip directly to [PaccMann^RL on SARS-CoV-2](#paccmannrl-on-sars-cov-2).
+
+If you chose to download our pretrained models, the directory structure looks like this:
+
+```console
+models
+├── ProteinVAE
+├── SELFIESVAE
+├── Tox21
+└── affinity
+```
+
+In this case you would only require the data under `data/training/` (8MB).
 
 **NOTE:** no worries, the `data` folder is in the [.gitignore](./.gitignore).
 
@@ -73,7 +88,7 @@ mkdir code && cd code && \
   git clone --branch sarscov2 https://github.com/PaccMann/paccmann_generator && \
   cd ..
 ```
-The branch is given to ensure a tested version working with the provided conda
+The branch is given to ensure a version working with the provided conda environment.
 
 **NOTE:** no worries, the `code` folder is in the [.gitignore](./.gitignore).
 
@@ -81,17 +96,7 @@ The branch is given to ensure a tested version working with the provided conda
 
 Now it's all set to run the full pipeline.
 
-**NOTE:** the workload required to run the full pipeline is intesive and might not be straightforward to run all the steps on a desktop laptop. For this reason, we also provide [pretrained models](https://ibm.ent.box.com/v/paccmann-sarscov2-models) (ca. 700MB) that can be downloaded and used to run the different steps. 
-
-if you chose to download our pretrained models, the directory structure looks like this:
-
-```console
-models
-├── ProteinVAE
-├── SELFIESVAE
-├── Tox21
-└── affinity
-```
+Calling any of the scripts with the `-h` or `--help` flag will provide you with some information on the arguments.
 
 **NOTE:** in the following, we assume a folder `models` has been created in the root of the repository. No worries, the `models` folder is in the [.gitignore](./.gitignore).
 
@@ -120,11 +125,10 @@ TODO embedding path in toxsmi.json
     ./models/ \
     ./code/toxsmi/params/mca.json \
     Tox21
+    --embedding_path ./data/pretraining/toxicity_predictor/smiles_vae_embeddings.pkl
 ```
 
 ### protein VAE
-TODO discuss name
-TODO params "epochs": 2000, "batch_size": 8192 in trained model
 ``` console
 (paccmann_sarscov2) $ python ./code/paccmann_omics/examples/encoded_proteins/train_protein_encoding_vae.py \
     ./data/pretraining/proteinVAE/tape_encoded/avg/train_representation.csv \
@@ -154,12 +158,13 @@ TODO params "epochs": 2000, "batch_size": 8192 in trained model
     ./data/training/merged_sequence_encoding/uniprot_covid-19.csv \
     ./code/paccmann_generator/examples/affinity/conditional_generator.json \
     paccmann_sarscov2 \
-    ACE2_HUMAN \
+    35 \
+    data/training/unbiased_predictons \
     --tox21_path ./models/Tox21
 ```
 
-TODO
-**NOTE:** this will create a `biased_model` folder containing the conditional generator and the baseline SMILES generator used. In this case: `breast_paccmann_rl` and `baseline`. No worries, the `biased_models` folder is in the [.gitignore](./.gitignore).
+This will create a `biased_models` folder containing the conditional generators, biased for all provided proteins from [covid-19.uniprot.org](https://covid-19.uniprot.org/) except one, in the example for ACE2_HUMAN. The biased generator generates compounds with a shifted distribution compared to unbiased predictions. Ideally, the model generalizes to ACE2_HUMAN and the biased compounds have overall higher affinity (to ACE2_HUMAN) **according to the affinity predictor**. See the pdf files in `biased_models/paccmann_sarscov2_35/results` to observe the effect at different stages of training.  
+**NOTE:** no worries, the `biased_models` folder is in the [.gitignore](./.gitignore).
 
 ## References
 
