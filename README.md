@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.com/PaccMann/paccmann_sarscov2.svg?branch=master)](https://travis-ci.com/PaccMann/paccmann_sarscov2)
-# paccmann_rl
+# paccmann_sarscov2
 
 Pipeline to reproduce the results of the [PaccMann^RL on SARS-CoV-2 paper](https://arxiv.org/abs/2005.13285).
 
@@ -9,7 +9,7 @@ In the repo we provide a conda environment and instructions to reproduce the pip
 
 1. Train a multimodal protein-compound interaction classifier, also known as the affinity predictor ([source code](https://github.com/PaccMann/paccmann_predictor))
 2. Train a toxicity predictor ([source code](https://github.com/PaccMann/toxsmi))
-3. Train a generative model for omic profiles, also known as the ProteinVAE ([source code](https://github.com/PaccMann/paccmann_omics))
+3. Train a generative model for encoded proteins, also known as the ProteinVAE ([source code](https://github.com/PaccMann/paccmann_omics))
 4. Train a generative model for molecules, also known as the SELFIESVAE ([source code](https://github.com/PaccMann/paccmann_chemistry))
 5. Train PaccMann^RL on SARS-CoV-2 using the pretained models from above ([source code](https://github.com/PaccMann/paccmann_generator))
 
