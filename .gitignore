@@ -5,8 +5,6 @@ __pycache__/
 
 *.DS_Store
 
-/biased_models
-
 # C extensions
 *.so
 
@@ -120,3 +118,4 @@ code
 # models
 models
 biased_models
+logs

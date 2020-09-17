@@ -1,30 +1,29 @@
-[![Build Status](https://travis-ci.org/PaccMann/paccmann_rl.svg?branch=master)](https://travis-ci.org/PaccMann/paccmann_rl)
-# paccmann_rl
+[![Build Status](https://travis-ci.com/PaccMann/paccmann_sarscov2.svg?branch=master)](https://travis-ci.com/PaccMann/paccmann_sarscov2)
+# paccmann_sarscov2
 
-Pipeline to reproduce the results of the [PaccMann^RL paper](https://arxiv.org/abs/1909.05114).
+Pipeline to reproduce the results of the [PaccMann^RL on SARS-CoV-2 paper](https://arxiv.org/abs/2005.13285).
 
 ## Description
 
-In the repo we provide a conda environment and instructions to reproduce the pipeline descirbed in the manuscript:
+In the repo we provide a conda environment and instructions to reproduce the pipeline described in the manuscript:
 
-1. Train a multimodal drug sensitivity predictor ([source code](https://github.com/PaccMann/paccmann_predictor))
-2. Train a generative model for omic profiles, also known as the PVAE ([source code](https://github.com/PaccMann/paccmann_omics))
-3. Train a generative model for molecules, also known as the SVAE ([source code](https://github.com/PaccMann/paccmann_chemistry))
-4. Train PaccMann^RL ([source code](https://github.com/PaccMann/paccmann_generator))
+1. Train a multimodal protein-compound interaction classifier, also known as the affinity predictor ([source code](https://github.com/PaccMann/paccmann_predictor))
+2. Train a toxicity predictor ([source code](https://github.com/PaccMann/toxsmi))
+3. Train a generative model for encoded proteins, also known as the ProteinVAE ([source code](https://github.com/PaccMann/paccmann_omics))
+4. Train a generative model for molecules, also known as the SELFIESVAE ([source code](https://github.com/PaccMann/paccmann_chemistry))
+5. Train PaccMann^RL on SARS-CoV-2 using the pretained models from above ([source code](https://github.com/PaccMann/paccmann_generator))
+
+
+**NOTE:** In the linked repositories, there are often multiple examples for training. For the use case of `paccmann_sarscov2`, relevant examples are named `affinity` or `encoded_proteins`.
 
 ## Requirements
 
 - `conda>=3.7`
-- The following data from [here](https://ibm.ent.box.com/v/paccmann-pytoda-data):
-  - The processed splitted data from the folder `splitted_data`
-  - The processed gene expression data from [GDSC](https://www.cancerrxgene.org/): `data/gene_expression/gdsc-rnaseq_gene-expression.csv`
-  - The processed SMILES from the drugs from [GDSC](https://www.cancerrxgene.org/): `data/smiles/gdsc.smi`
-  - A pickled [SMILESLanguage](https://github.com/PaccMann/paccmann_datasets/blob/master/pytoda/smiles/smiles_language.py) object (`data/smiles_language_chembl_gdsc_ccle.pkl`)
-  - A pickled list of genes representing the panel considered in the paper (`data/2128_genes.pkl`)
-  - A pickled pandas DataFrame containing expression values and metadata for the cell lines considered in the paper (`data/gdsc_transcriptomics_for_conditional_generation.pkl`)
+- The following data from this [Box link](https://ibm.ent.box.com/v/paccmann-sarscov2-data).  
+  View the respective `README.md` files on data sources.  
 - The git repos linked in the [previous section](#description)
 
-**NOTE:** please refer to the [README.md](https://ibm.ent.box.com/v/paccmann-pytoda-data/file/548614344106) and to the manuscript for details on the datasets used and the preprocessing applied.
+<!-- **NOTE:** please refer to the [README.md](https://ibm.ent.box.com/v/paccmann-pytoda-data/file/548614344106) and to the manuscript for details on the datasets used and the preprocessing applied. -->
 
 ## Setup
 
@@ -39,33 +38,42 @@ conda env create -f conda.yml
 Activate the environment:
 
 ```sh
-conda activate paccmann_rl
+conda activate paccmann_sarscov2
 ```
 
-### Download data
+### Download data and optional pretrained models
 
-Download the data reported in the [requirements section](#requirements).
+Download the [data](https://ibm.ent.box.com/v/paccmann-sarscov2-data) as reported in the [requirements section](#requirements).
 From now on, we will assume that they are stored in the root of the repository in a folder called `data`, following this structure:
 
 ```console
 data
-├── 2128_genes.pkl
-├── gdsc-rnaseq_gene-expression.csv
-├── gdsc.smi
-├── gdsc_transcriptomics_for_conditional_generation.pkl
-├── smiles_language_chembl_gdsc_ccle.pkl
-└── splitted_data
-    ├── gdsc_cell_line_ic50_test_fraction_0.1_id_997_seed_42.csv
-    ├── gdsc_cell_line_ic50_train_fraction_0.9_id_997_seed_42.csv
-    ├── tcga_rnaseq_test_fraction_0.1_id_242870585127480531622270373503581547167_seed_42.csv
-    ├── tcga_rnaseq_train_fraction_0.9_id_242870585127480531622270373503581547167_seed_42.csv
-    ├── test_chembl_22_clean_1576904_sorted_std_final.smi
-    └── train_chembl_22_clean_1576904_sorted_std_final.smi
+├── pretraining
+│   ├── ProteinVAE
+│   ├── SELFIESVAE
+│   ├── affinity_predictor
+│   ├── laguage_models
+│   └── toxicity_predictor
+└── training
+```
+This is around **6GB** of data, required for pretaining multiple models.
+Also, the workload required to run the full pipeline is intensive and might not be straightforward to run all the steps on a desktop laptop.
 
-1 directory, 11 files
+For these reasons we also provide [pretrained models](https://ibm.ent.box.com/v/paccmann-sarscov2-models) (ca. 700MB) for download. In the [Pipeline](#pipeline) section this allows you to skip directly to [PaccMann^RL on SARS-CoV-2](#paccmannrl-on-sars-cov-2).
+
+If you chose to download our pretrained models, the directory structure looks like this:
+
+```console
+models
+├── ProteinVAE
+├── SELFIESVAE
+├── Tox21
+└── affinity
 ```
 
-**NOTE:** no worries, the `data` folder is in the [.gitignore](./.gitignore).
+In this case you would only require the data under `data/training/` (8MB).
+
+**NOTE:** no worries, the `data` and `models` folders are in the [.gitignore](./.gitignore).
 
 ### Clone the repos
 
@@ -73,12 +81,14 @@ To get the scripts to run each of the component create a `code` folder and clone
 
 ```sh
 mkdir code && cd code && \
-  git clone https://github.com/PaccMann/paccmann_predictor && \ 
-  git clone https://github.com/PaccMann/paccmann_omics && \ 
-  git clone https://github.com/PaccMann/paccmann_chemistry && \ 
-  git clone https://github.com/PaccMann/paccmann_generator && \
+  git clone --branch sarscov2 https://github.com/PaccMann/paccmann_predictor && \ 
+  git clone --branch 0.0.2 https://github.com/PaccMann/toxsmi && \
+  git clone --branch sarscov2 https://github.com/PaccMann/paccmann_omics && \ 
+  git clone --branch sarscov2 https://github.com/PaccMann/paccmann_chemistry && \ 
+  git clone --branch sarscov2 https://github.com/PaccMann/paccmann_generator && \
   cd ..
 ```
+The branch is given to ensure a version working with the provided conda environment.
 
 **NOTE:** no worries, the `code` folder is in the [.gitignore](./.gitignore).
 
@@ -86,72 +96,86 @@ mkdir code && cd code && \
 
 Now it's all set to run the full pipeline.
 
-**NOTE:** the workload required to run the full pipeline is intesive and might not be straightforward to run all the steps on a desktop laptop. For this reason, we also provide [pretrained models](https://ibm.ent.box.com/v/paccmann-pytoda-data/folder/91897885403) that can be downloaded and used to run the different steps.
+Calling any of the scripts with the `-h` or `--help` flag will provide you with some information on the arguments.
 
-**NOTE:** in the following, we assume a folder `models` has been created in the root of the repository. No worries, the `models` folder is in the [.gitignore](./.gitignore).
+**NOTE:** in the following, we assume a folder `models` has been created in the root of the repository.  
 
-### Multimodal drug sensitivity predictor
-
+### affinity predictor
 ```console
-(paccmann_rl) $ python ./code/paccmann_predictor/examples/train_paccmann.py \
-    ./data/splitted_data/gdsc_cell_line_ic50_train_fraction_0.9_id_997_seed_42.csv \
-    ./data/splitted_data/gdsc_cell_line_ic50_test_fraction_0.1_id_997_seed_42.csv \
-    ./data/gdsc-rnaseq_gene-expression.csv \
-    ./data/gdsc.smi \
-    ./data/2128_genes.pkl \
-    ./data/smiles_language_chembl_gdsc_ccle.pkl \
+(paccmann_sarscov2) $ python ./code/paccmann_predictor/examples/affinity/train_affinity.py \
+    ./data/pretraining/affinity_predictor/filtered_train_binding_data.csv \
+    ./data/pretraining/affinity_predictor/filtered_val_binding_data.csv \
+    ./data/pretraining/affinity_predictor/sequences.smi \
+    ./data/pretraining/affinity_predictor/filtered_ligands.smi \
+    ./data/pretraining/language_models/smiles_language_chembl_gdsc_ccle_tox21_zinc_organdb_bindingdb.pkl \
+    ./data/pretraining/language_models/protein_language_bindingdb.pkl \
     ./models/ \
-    ./code/paccmann_predictor/examples/example_params.json paccmann
+    ./code/paccmann_predictor/examples/affinity/affinity.json \
+    affinity
 ```
 
-### PVAE
-
-``` console
-(paccmann_rl) $ python ./code/paccmann_omics/examples/train_vae.py \
-    ./data/splitted_data/tcga_rnaseq_train_fraction_0.9_id_242870585127480531622270373503581547167_seed_42.csv \
-    ./data/splitted_data/tcga_rnaseq_test_fraction_0.1_id_242870585127480531622270373503581547167_seed_42.csv \
-    ./data/2128_genes.pkl \
+### toxicity predictor
+```console
+(paccmann_sarscov2) $ python ./code/toxsmi/scripts/train_tox.py \
+    ./data/pretraining/toxicity_predictor/tox21_train.csv \
+    ./data/pretraining/toxicity_predictor/tox21_test.csv \
+    ./data/pretraining/toxicity_predictor/tox21.smi \
+    ./data/pretraining/language_models/smiles_language_tox21.pkl \
     ./models/ \
-    ./code/paccmann_omics/examples/example_params.json pvae
+    ./code/toxsmi/params/mca.json \
+    Tox21 \
+    --embedding_path ./data/pretraining/toxicity_predictor/smiles_vae_embeddings.pkl
 ```
 
-### SVAE
-
+### protein VAE
 ``` console
-(paccmann_rl) $ python ./code/paccmann_chemistry/examples/train_vae.py \
-    ./data/splitted_data/train_chembl_22_clean_1576904_sorted_std_final.smi \
-    ./data/splitted_data/test_chembl_22_clean_1576904_sorted_std_final.smi \
-    ./data/smiles_language_chembl_gdsc_ccle.pkl \
+(paccmann_sarscov2) $ python ./code/paccmann_omics/examples/encoded_proteins/train_protein_encoding_vae.py \
+    ./data/pretraining/proteinVAE/tape_encoded/train_representation.csv \
+    ./data/pretraining/proteinVAE/tape_encoded/val_representation.csv \
     ./models/ \
-    ./code/paccmann_chemistry/examples/example_params.json svae
+    ./code/paccmann_omics/examples/encoded_proteins/protein_encoding_vae_params.json \
+    ProteinVAE
 ```
 
-### PaccMann^RL
-
+### SELFIES VAE
 ``` console
-(paccmann_rl) $ python ./code/paccmann_generator/examples/train_paccmann_rl.py \
-    ./models/svae \
-    ./models/pvae \
-    ./models/paccmann \
-    ./data/smiles_language_chembl_gdsc_ccle.pkl \
-    ./data/gdsc_transcriptomics_for_conditional_generation.pkl \
-    ./code/paccmann_generator/examples/example_params.json \
-    paccmann_rl breast
+(paccmann_sarscov2) $ python ./code/paccmann_chemistry/examples/train_vae.py \
+    ./data/pretraining/SELFIESVAE/train_chembl_22_clean_1576904_sorted_std_final.smi \
+    ./data/pretraining/SELFIESVAE/test_chembl_22_clean_1576904_sorted_std_final.smi \
+    ./data/pretraining/language_models/selfies_language.pkl \
+    ./models/ \
+    ./code/paccmann_chemistry/examples/example_params.json \
+    SELFIESVAE
 ```
 
-**NOTE:** this will create a `biased_model` folder containing the conditional generator and the baseline SMILES generator used. In this case: `breast_paccmann_rl` and `baseline`. No worries, the `biased_models` folder is in the [.gitignore](./.gitignore).
+### PaccMann^RL on SARS-CoV-2
+``` console
+(paccmann_sarscov2) $ python ./code/paccmann_generator/examples/affinity/train_conditional_generator.py \
+    ./models/SELFIESVAE \
+    ./models/ProteinVAE \
+    ./models/affinity \
+    ./data/training/merged_sequence_encoding/uniprot_covid-19.csv \
+    ./code/paccmann_generator/examples/affinity/conditional_generator.json \
+    paccmann_sarscov2 \
+    35 \
+    data/training/unbiased_predictons \
+    --tox21_path ./models/Tox21
+```
+
+This will create a `biased_models` folder containing the conditional generators, biased for all provided proteins from [covid-19.uniprot.org](https://covid-19.uniprot.org/) except one, in the example for ACE2_HUMAN. The biased generator generates compounds with a shifted distribution compared to unbiased predictions. Ideally, the model generalizes to ACE2_HUMAN and the biased compounds have overall higher affinity (to ACE2_HUMAN) **according to the affinity predictor**. See the pdf files in `biased_models/paccmann_sarscov2_35/results` to observe the effect at different stages of training.  
+**NOTE:** no worries, the `biased_models` folder is in the [.gitignore](./.gitignore).
 
 ## References
 
-If you use `paccmann_rl` in your projects, please cite the following:
+If you use `paccmann_sarscov2` in your projects, please cite the following:
 
 ```bib
-@misc{born2019paccmannrl,
-    title={PaccMann^RL: Designing anticancer drugs from transcriptomic data via reinforcement learning},
-    author={Jannis Born and Matteo Manica and Ali Oskooei and Joris Cadow and María Rodríguez Martínez},
-    year={2019},
-    eprint={1909.05114},
+@misc{born2020paccmannrl,
+    title={PaccMann$^{RL}$ on SARS-CoV-2: Designing antiviral candidates with conditional generative models},
+    author={Jannis Born and Matteo Manica and Joris Cadow and Greta Markert and Nil Adell Mill and Modestas Filipavicius and María Rodríguez Martínez},
+    year={2020},
+    eprint={2005.13285},
     archivePrefix={arXiv},
-    primaryClass={q-bio.BM}
+    primaryClass={q-bio.QM}
 }
 ```
