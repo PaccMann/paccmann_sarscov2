@@ -19,8 +19,8 @@ In the repo we provide a conda environment and instructions to reproduce the pip
 ## Requirements
 
 - `conda>=3.7`
-- The following data from [here](https://ibm.ent.box.com/v/paccmann-sarscov2-data)  
-  View the respective README.md files on data sources.  
+- The following data from this [Box link](https://ibm.ent.box.com/v/paccmann-sarscov2-data).  
+  View the respective `README.md` files on data sources.  
 - The git repos linked in the [previous section](#description)
 
 <!-- **NOTE:** please refer to the [README.md](https://ibm.ent.box.com/v/paccmann-pytoda-data/file/548614344106) and to the manuscript for details on the datasets used and the preprocessing applied. -->
@@ -43,7 +43,7 @@ conda activate paccmann_sarscov2
 
 ### Download data and optional pretrained models
 
-Download the data reported in the [requirements section](#requirements).
+Download the [data](https://ibm.ent.box.com/v/paccmann-sarscov2-data) as reported in the [requirements section](#requirements).
 From now on, we will assume that they are stored in the root of the repository in a folder called `data`, following this structure:
 
 ```console
@@ -73,7 +73,7 @@ models
 
 In this case you would only require the data under `data/training/` (8MB).
 
-**NOTE:** no worries, the `data` folder is in the [.gitignore](./.gitignore).
+**NOTE:** no worries, the `data` and `models` folders are in the [.gitignore](./.gitignore).
 
 ### Clone the repos
 
@@ -82,7 +82,7 @@ To get the scripts to run each of the component create a `code` folder and clone
 ```sh
 mkdir code && cd code && \
   git clone --branch sarscov2 https://github.com/PaccMann/paccmann_predictor && \ 
-  git clone --branch 0.0.1 https://github.com/PaccMann/toxsmi && \
+  git clone --branch 0.0.2 https://github.com/PaccMann/toxsmi && \
   git clone --branch sarscov2 https://github.com/PaccMann/paccmann_omics && \ 
   git clone --branch sarscov2 https://github.com/PaccMann/paccmann_chemistry && \ 
   git clone --branch sarscov2 https://github.com/PaccMann/paccmann_generator && \
@@ -98,7 +98,7 @@ Now it's all set to run the full pipeline.
 
 Calling any of the scripts with the `-h` or `--help` flag will provide you with some information on the arguments.
 
-**NOTE:** in the following, we assume a folder `models` has been created in the root of the repository. No worries, the `models` folder is in the [.gitignore](./.gitignore).
+**NOTE:** in the following, we assume a folder `models` has been created in the root of the repository.  
 
 ### affinity predictor
 ```console
@@ -115,7 +115,6 @@ Calling any of the scripts with the `-h` or `--help` flag will provide you with 
 ```
 
 ### toxicity predictor
-TODO embedding path in toxsmi.json
 ```console
 (paccmann_sarscov2) $ python ./code/toxsmi/scripts/train_tox.py \
     ./data/pretraining/toxicity_predictor/tox21_train.csv \
@@ -124,15 +123,15 @@ TODO embedding path in toxsmi.json
     ./data/pretraining/language_models/smiles_language_tox21.pkl \
     ./models/ \
     ./code/toxsmi/params/mca.json \
-    Tox21
+    Tox21 \
     --embedding_path ./data/pretraining/toxicity_predictor/smiles_vae_embeddings.pkl
 ```
 
 ### protein VAE
 ``` console
 (paccmann_sarscov2) $ python ./code/paccmann_omics/examples/encoded_proteins/train_protein_encoding_vae.py \
-    ./data/pretraining/proteinVAE/tape_encoded/avg/train_representation.csv \
-    ./data/pretraining/proteinVAE/tape_encoded/avg/val_representation.csv \
+    ./data/pretraining/proteinVAE/tape_encoded/train_representation.csv \
+    ./data/pretraining/proteinVAE/tape_encoded/val_representation.csv \
     ./models/ \
     ./code/paccmann_omics/examples/encoded_proteins/protein_encoding_vae_params.json \
     ProteinVAE
