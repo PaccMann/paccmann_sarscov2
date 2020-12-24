@@ -46,7 +46,7 @@ conda activate paccmann_sarscov2
 sudo apt-get install libxrender1
 ```
 
-### Download data and optional pretrained models
+### Download data and pretrained models
 
 Download the [data](https://ibm.ent.box.com/v/paccmann-sarscov2-data) as reported in the [requirements section](#requirements).
 From now on, we will assume that they are stored in the root of the repository in a folder called `data`, following this structure:
@@ -64,9 +64,9 @@ data
 This is around **6GB** of data, required for pretaining multiple models.
 Also, the workload required to run the full pipeline is intensive and might not be straightforward to run all the steps on a desktop laptop.
 
-For these reasons we also provide [pretrained models](https://ibm.ent.box.com/v/paccmann-sarscov2-models) (ca. 700MB) for download. In the [Pipeline](#pipeline) section this allows you to skip directly to [PaccMann^RL on SARS-CoV-2](#paccmannrl-on-sars-cov-2).
+For these reasons we also provide [pretrained models](https://ibm.ent.box.com/v/paccmann-sarscov2-models) (ca. 700MB) for download.
 
-If you chose to download our pretrained models, the directory structure looks like this:
+Once the download of the pretrained models is completed, the directory structure looks like this:
 
 ```console
 models
@@ -76,9 +76,52 @@ models
 └── affinity
 ```
 
-In this case you would only require the data under `data/training/` (8MB).
-
 **NOTE:** no worries, the `data` and `models` folders are in the [.gitignore](./.gitignore).
+
+## PaccMann^RL on SARS-CoV-2
+
+Using the pretrained models to train the conditional generator you would only require the data under `data/training/` (8MB).
+
+### Clone the repo
+
+To get the training script simply type this:
+
+```sh
+mkdir code && cd code && \
+  git clone --branch sarscov2 https://github.com/PaccMann/paccmann_generator && \
+  cd ..
+```
+
+**NOTE:** no worries, the `code` folder is in the [.gitignore](./.gitignore).
+
+### Running training
+
+Running the training is as easy as running:
+
+``` console
+(paccmann_sarscov2) $ python ./code/paccmann_generator/examples/affinity/train_conditional_generator.py \
+    ./models/SELFIESVAE \
+    ./models/ProteinVAE \
+    ./models/affinity \
+    ./data/training/merged_sequence_encoding/uniprot_covid-19.csv \
+    ./code/paccmann_generator/examples/affinity/conditional_generator.json \
+    paccmann_sarscov2 \
+    35 \
+    ./data/training/unbiased_predictions \
+    --tox21_path ./models/Tox21
+```
+
+This will create a `biased_models` folder containing the conditional generators, biased for all provided proteins from [covid-19.uniprot.org](https://covid-19.uniprot.org/) except one, in the example for ACE2_HUMAN. The biased generator generates compounds with a shifted distribution compared to unbiased predictions. Ideally, the model generalizes to ACE2_HUMAN and the biased compounds have overall higher affinity (to ACE2_HUMAN) **according to the affinity predictor**. See the pdf files in `biased_models/paccmann_sarscov2_35/results` to observe the effect at different stages of training.  
+
+**NOTE:** no worries, the `biased_models` folder is in the [.gitignore](./.gitignore).
+
+## Pretraining pipeline
+
+We also provide instructions and scripts to reproduce the full pretraining pipeline, keep in mind **we discourage you from running this on a desktop laptop**.
+
+Calling any of the scripts with the `-h` or `--help` flag will provide you with some information on the arguments.
+
+**NOTE:** in the following, we assume a folder `models` has been created in the root of the repository.  
 
 ### Clone the repos
 
@@ -94,16 +137,6 @@ mkdir code && cd code && \
   cd ..
 ```
 The branch is given to ensure a version working with the provided conda environment.
-
-**NOTE:** no worries, the `code` folder is in the [.gitignore](./.gitignore).
-
-## Pipeline
-
-Now it's all set to run the full pipeline.
-
-Calling any of the scripts with the `-h` or `--help` flag will provide you with some information on the arguments.
-
-**NOTE:** in the following, we assume a folder `models` has been created in the root of the repository.  
 
 ### affinity predictor
 ```console
@@ -152,23 +185,6 @@ Calling any of the scripts with the `-h` or `--help` flag will provide you with 
     ./code/paccmann_chemistry/examples/example_params.json \
     SELFIESVAE
 ```
-
-### PaccMann^RL on SARS-CoV-2
-``` console
-(paccmann_sarscov2) $ python ./code/paccmann_generator/examples/affinity/train_conditional_generator.py \
-    ./models/SELFIESVAE \
-    ./models/ProteinVAE \
-    ./models/affinity \
-    ./data/training/merged_sequence_encoding/uniprot_covid-19.csv \
-    ./code/paccmann_generator/examples/affinity/conditional_generator.json \
-    paccmann_sarscov2 \
-    35 \
-    ./data/training/unbiased_predictions \
-    --tox21_path ./models/Tox21
-```
-
-This will create a `biased_models` folder containing the conditional generators, biased for all provided proteins from [covid-19.uniprot.org](https://covid-19.uniprot.org/) except one, in the example for ACE2_HUMAN. The biased generator generates compounds with a shifted distribution compared to unbiased predictions. Ideally, the model generalizes to ACE2_HUMAN and the biased compounds have overall higher affinity (to ACE2_HUMAN) **according to the affinity predictor**. See the pdf files in `biased_models/paccmann_sarscov2_35/results` to observe the effect at different stages of training.  
-**NOTE:** no worries, the `biased_models` folder is in the [.gitignore](./.gitignore).
 
 ## References
 
