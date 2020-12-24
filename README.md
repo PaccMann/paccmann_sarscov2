@@ -52,7 +52,7 @@ data
 │   ├── ProteinVAE
 │   ├── SELFIESVAE
 │   ├── affinity_predictor
-│   ├── laguage_models
+│   ├── language_models
 │   └── toxicity_predictor
 └── training
 ```
@@ -158,7 +158,7 @@ Calling any of the scripts with the `-h` or `--help` flag will provide you with 
     ./code/paccmann_generator/examples/affinity/conditional_generator.json \
     paccmann_sarscov2 \
     35 \
-    data/training/unbiased_predictons \
+    ./data/training/unbiased_predictions \
     --tox21_path ./models/Tox21
 ```
 
