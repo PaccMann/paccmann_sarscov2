@@ -41,6 +41,11 @@ Activate the environment:
 conda activate paccmann_sarscov2
 ```
 
+**NOTE:** On Ubuntu, you may now need to run the following to obtain a functional `RDKit` distribution: 
+```sh
+sudo apt-get install libxrender1
+```
+
 ### Download data and optional pretrained models
 
 Download the [data](https://ibm.ent.box.com/v/paccmann-sarscov2-data) as reported in the [requirements section](#requirements).
