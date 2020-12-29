@@ -92,6 +92,7 @@ mkdir code && cd code && \
   cd ..
 ```
 The branch is given to ensure a version working with the provided conda environment.
+
 **NOTE:** no worries, the `code` folder is in the [.gitignore](./.gitignore).
 
 ### Running training
