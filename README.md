@@ -192,12 +192,11 @@ The branch is given to ensure a version working with the provided conda environm
 If you use `paccmann_sarscov2` in your projects, please cite the following:
 
 ```bib
-@misc{born2020paccmannrl,
-    title={PaccMann$^{RL}$ on SARS-CoV-2: Designing antiviral candidates with conditional generative models},
-    author={Jannis Born and Matteo Manica and Joris Cadow and Greta Markert and Nil Adell Mill and Modestas Filipavicius and María Rodríguez Martínez},
-    year={2020},
-    eprint={2005.13285},
-    archivePrefix={arXiv},
-    primaryClass={q-bio.QM}
+@article{born2021data,
+  title={Data-driven Molecular Design for Discovery and Synthesis of Novel Ligands-A case study on SARS-CoV-2},
+  author={Born, Jannis and Manica, Matteo and Cadow, Joris and Markert, Greta and Filipavicius, Modestas and Mill, Nil Adell and Janakarajan, Nikita and Cardinale, Antonio and Laino, Teodoro and Martinez, Maria Rodriguez},
+  journal={Machine Learning: Science and Technology},
+  year={2021},
+  publisher={IOP Publishing}
 }
 ```
