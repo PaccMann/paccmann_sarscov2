@@ -1,7 +1,10 @@
 [![Build Status](https://travis-ci.com/PaccMann/paccmann_sarscov2.svg?token=2MtToGFVpNnBsn4qEgU7&branch=master)](https://travis-ci.com/PaccMann/paccmann_sarscov2)
 # paccmann_sarscov2
 
-Pipeline to reproduce the results of the [PaccMann^RL on SARS-CoV-2 paper](https://arxiv.org/abs/2005.13285).
+Pipeline to reproduce the results of the paper [Data-driven molecular design for discovery and synthesis of novel ligands: a case study on SARS-CoV-2](https://iopscience.iop.org/article/10.1088/2632-2153/abe808) (_Machine Learning: Science and Technology_, 2021). In that paper, we propose a de-novo molecular generative model for protein driven molecular design and bundle it with molecular retrosynthesis models to automatize all steps before the actual synthesis of a drug candidate.
+
+![Graphical abstract](https://github.com/PaccMann/paccmann_sarscov2/blob/master/assets/overview.png "Graphical abstract")
+
 
 ## Description
 
@@ -192,11 +195,16 @@ The branch is given to ensure a version working with the provided conda environm
 If you use `paccmann_sarscov2` in your projects, please cite the following:
 
 ```bib
-@article{born2021data,
-  title={Data-driven Molecular Design for Discovery and Synthesis of Novel Ligands-A case study on SARS-CoV-2},
-  author={Born, Jannis and Manica, Matteo and Cadow, Joris and Markert, Greta and Filipavicius, Modestas and Mill, Nil Adell and Janakarajan, Nikita and Cardinale, Antonio and Laino, Teodoro and Martinez, Maria Rodriguez},
-  journal={Machine Learning: Science and Technology},
-  year={2021},
-  publisher={IOP Publishing}
+@article{born2021datadriven,
+  author = {Born, Jannis and Manica, Matteo and Cadow, Joris and Markert, Greta and Mill, Nil Adell and Filipavicius, Modestas and Janakarajan, Nikita and Cardinale, Antonio and Laino, Teodoro and {Rodr{\'{i}}guez Mart{\'{i}}nez}, Mar{\'{i}}a},
+  doi = {10.1088/2632-2153/abe808},
+  issn = {2632-2153},
+  journal = {Machine Learning: Science and Technology},
+  number = {2},
+  pages = {025024},
+  title = {{Data-driven molecular design for discovery and synthesis of novel ligands: a case study on SARS-CoV-2}},
+  url = {https://iopscience.iop.org/article/10.1088/2632-2153/abe808},
+  volume = {2},
+  year = {2021}
 }
 ```
