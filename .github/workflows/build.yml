@@ -68,11 +68,11 @@ jobs:
           python3 -c "import paccmann_omics"
           python3 -c "import paccmann_chemistry"
           python3 -c "import paccmann_generator"
-          python3 ./code/paccmann_predictor/examples/affinity/train_affinity.py -h
-          python3 ./code/toxsmi/scripts/train_tox.py -h
-          python3 ./code/paccmann_omics/examples/encoded_proteins/train_protein_encoding_vae.py -h
-          python3 ./code/paccmann_chemistry/examples/train_vae.py -h
-          python3 ./code/paccmann_generator/examples/affinity/train_conditional_generator.py -h
+          python3 paccmann_predictor/examples/affinity/train_affinity.py -h
+          python3 toxsmi/scripts/train_tox.py -h
+          python3 paccmann_omics/examples/encoded_proteins/train_protein_encoding_vae.py -h
+          python3 paccmann_chemistry/examples/train_vae.py -h
+          python3 paccmann_generator/examples/affinity/train_conditional_generator.py -h
 
       - name: Send Slack notification
         uses: 8398a7/action-slack@v2
