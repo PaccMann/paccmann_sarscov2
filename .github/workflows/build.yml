@@ -56,7 +56,6 @@ jobs:
 
       - name: Install dependencies and test code 
         run: |
-          python3 -m pip install --upgrade pip
           git clone --branch sarscov2 https://github.com/PaccMann/paccmann_predictor 
           git clone --branch 0.0.2 https://github.com/PaccMann/toxsmi
           git clone --branch sarscov2 https://github.com/PaccMann/paccmann_omics 
