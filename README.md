@@ -1,4 +1,6 @@
-[![Build Status](https://travis-ci.com/PaccMann/paccmann_sarscov2.svg?token=2MtToGFVpNnBsn4qEgU7&branch=master)](https://travis-ci.com/PaccMann/paccmann_sarscov2)
+[![Build Status](https://github.com/PaccMann/paccmann_sarscov2/actions/workflows/build.yml/badge.svg)](https://github.com/PaccMann/paccmann_sarscov2/actions/workflows/build.yml)
+
+
 # paccmann_sarscov2
 
 Pipeline to reproduce the results of the paper [Data-driven molecular design for discovery and synthesis of novel ligands: a case study on SARS-CoV-2](https://iopscience.iop.org/article/10.1088/2632-2153/abe808) (_Machine Learning: Science and Technology_, 2021). In that paper, we propose a de-novo molecular generative model for protein driven molecular design and bundle it with molecular retrosynthesis models to automatize all steps before the actual synthesis of a drug candidate.
